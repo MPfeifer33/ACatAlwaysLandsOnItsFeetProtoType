@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://dio4guovnh3es"]
+
+[ext_resource type="PackedScene" uid="uid://j8mhkqha6coq" path="res://Player/cat_five.tscn" id="1_2w1kt"]
+[ext_resource type="Script" uid="uid://y6htwmmvmxqx" path="res://Main/main.gd" id="1_main"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="LevelContainer" type="Node2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("1_2w1kt")]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10

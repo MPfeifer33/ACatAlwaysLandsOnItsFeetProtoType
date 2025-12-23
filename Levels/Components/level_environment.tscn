@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg5k7y2mxl8qe"]
+
+[ext_resource type="Script" uid="uid://bsv47x2k2x0yc" path="res://Levels/Components/level_environment.gd" id="1_env"]
+
+[node name="LevelEnvironment" type="Node2D"]
+script = ExtResource("1_env")
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Background"]
+show_behind_parent = true
+centered = false
+
+[node name="CanvasModulate" type="CanvasModulate" parent="Background"]
+color = Color(1, 1, 1, 1)

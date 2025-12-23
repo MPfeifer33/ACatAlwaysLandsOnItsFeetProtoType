@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://level_entrance_component"]
+
+[ext_resource type="Script" path="res://Levels/Components/level_entrance.gd" id="1_script"]
+
+[node name="LevelEntrance" type="Marker2D"]
+script = ExtResource("1_script")
+entrance_id = "default"
+facing_direction = 1
+editor_color = Color(0, 1, 0.5, 0.8)
+marker_size = 24.0

@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://0n3vkuc2qpmx"]
+
+[ext_resource type="Texture2D" uid="uid://c8tpblsydx1b5" path="res://Assets/Extras/Hospital.png" id="1_cx8yn"]
+[ext_resource type="Script" uid="uid://dq3k4lvsievyg" path="res://Main/hospital.gd" id="1_oycew"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c6gsm"]
+size = Vector2(205, 61)
+
+[node name="Hospital" type="Node2D"]
+script = ExtResource("1_oycew")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-3, 39)
+shape = SubResource("RectangleShape2D_c6gsm")
+
+[node name="Hospital" type="Sprite2D" parent="."]
+modulate = Color(0.77543247, 0.67930675, 0.63739175, 1)
+texture = ExtResource("1_cx8yn")

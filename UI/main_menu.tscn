@@ -1,0 +1,188 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://UI/main_menu.gd" id="1_script"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.12, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/TitleContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 32
+text = "🐱 Cat Always Lands On Its Feet 🐱"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="CenterContainer/TitleContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "A Cozy Ninja Cat Metroidvania"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="CenterContainer/TitleContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="ButtonContainer" type="VBoxContainer" parent="CenterContainer/TitleContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 12
+
+[node name="NewGameButton" type="Button" parent="CenterContainer/TitleContainer/ButtonContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../ContinueButton")
+theme_override_font_sizes/font_size = 18
+text = "🎮  New Game"
+
+[node name="ContinueButton" type="Button" parent="CenterContainer/TitleContainer/ButtonContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+focus_neighbor_top = NodePath("../NewGameButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
+theme_override_font_sizes/font_size = 18
+text = "📂  Continue"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/TitleContainer/ButtonContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+focus_neighbor_top = NodePath("../ContinueButton")
+focus_neighbor_bottom = NodePath("../NewGameButton")
+theme_override_font_sizes/font_size = 18
+text = "🚪  Quit"
+
+[node name="Spacer2" type="Control" parent="CenterContainer/TitleContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="CreditsLabel" type="Label" parent="CenterContainer/TitleContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.5, 0.6, 1)
+theme_override_font_sizes/font_size = 12
+text = "Help Tama find the Golden Sushi!"
+horizontal_alignment = 1
+
+[node name="SlotContainer" type="VBoxContainer" parent="CenterContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="Label" parent="CenterContainer/SlotContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Select Save Slot"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="CenterContainer/SlotContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="SlotButton1" type="Button" parent="CenterContainer/SlotContainer"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+focus_neighbor_top = NodePath("../BackButton")
+focus_neighbor_bottom = NodePath("../SlotButton2")
+theme_override_font_sizes/font_size = 16
+text = "Slot 1 - Empty"
+
+[node name="SlotButton2" type="Button" parent="CenterContainer/SlotContainer"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+focus_neighbor_top = NodePath("../SlotButton1")
+focus_neighbor_bottom = NodePath("../SlotButton3")
+theme_override_font_sizes/font_size = 16
+text = "Slot 2 - Empty"
+
+[node name="SlotButton3" type="Button" parent="CenterContainer/SlotContainer"]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+focus_neighbor_top = NodePath("../SlotButton2")
+focus_neighbor_bottom = NodePath("../BackButton")
+theme_override_font_sizes/font_size = 16
+text = "Slot 3 - Empty"
+
+[node name="Spacer2" type="Control" parent="CenterContainer/SlotContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CenterContainer/SlotContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_neighbor_top = NodePath("../SlotButton3")
+focus_neighbor_bottom = NodePath("../SlotButton1")
+theme_override_font_sizes/font_size = 16
+text = "← Back"
+
+[node name="ConfirmContainer" type="VBoxContainer" parent="CenterContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ConfirmLabel" type="Label" parent="CenterContainer/ConfirmContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 18
+text = "This slot has existing data.
+Overwrite save?"
+horizontal_alignment = 1
+
+[node name="ButtonRow" type="HBoxContainer" parent="CenterContainer/ConfirmContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 20
+
+[node name="YesButton" type="Button" parent="CenterContainer/ConfirmContainer/ButtonRow"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../NoButton")
+focus_neighbor_right = NodePath("../NoButton")
+theme_override_font_sizes/font_size = 16
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="CenterContainer/ConfirmContainer/ButtonRow"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath("../YesButton")
+focus_neighbor_right = NodePath("../YesButton")
+theme_override_font_sizes/font_size = 16
+text = "No"
+
+[connection signal="pressed" from="CenterContainer/TitleContainer/ButtonContainer/NewGameButton" to="." method="_on_new_game_pressed"]
+[connection signal="pressed" from="CenterContainer/TitleContainer/ButtonContainer/ContinueButton" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="CenterContainer/TitleContainer/ButtonContainer/QuitButton" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="CenterContainer/SlotContainer/SlotButton1" to="." method="_on_slot_1_pressed"]
+[connection signal="pressed" from="CenterContainer/SlotContainer/SlotButton2" to="." method="_on_slot_2_pressed"]
+[connection signal="pressed" from="CenterContainer/SlotContainer/SlotButton3" to="." method="_on_slot_3_pressed"]
+[connection signal="pressed" from="CenterContainer/SlotContainer/BackButton" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="CenterContainer/ConfirmContainer/ButtonRow/YesButton" to="." method="_on_confirm_yes_pressed"]
+[connection signal="pressed" from="CenterContainer/ConfirmContainer/ButtonRow/NoButton" to="." method="_on_confirm_no_pressed"]

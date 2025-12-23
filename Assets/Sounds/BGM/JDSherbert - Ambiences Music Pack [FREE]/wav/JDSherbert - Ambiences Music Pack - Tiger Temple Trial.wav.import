@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://df6aun5akjf47"
+path="res://.godot/imported/JDSherbert - Ambiences Music Pack - Tiger Temple Trial.wav-c28edea03ceb6657bf32b31f4a2260de.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/BGM/JDSherbert - Ambiences Music Pack [FREE]/wav/JDSherbert - Ambiences Music Pack - Tiger Temple Trial.wav"
+dest_files=["res://.godot/imported/JDSherbert - Ambiences Music Pack - Tiger Temple Trial.wav-c28edea03ceb6657bf32b31f4a2260de.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

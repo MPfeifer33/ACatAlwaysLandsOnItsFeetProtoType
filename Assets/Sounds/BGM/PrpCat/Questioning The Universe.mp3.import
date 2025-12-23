@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://4alxcc8p1x7q"
+path="res://.godot/imported/Questioning The Universe.mp3-56aa0cf0147a8493004b5de5b536e3ce.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sounds/BGM/PrpCat/Questioning The Universe.mp3"
+dest_files=["res://.godot/imported/Questioning The Universe.mp3-56aa0cf0147a8493004b5de5b536e3ce.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

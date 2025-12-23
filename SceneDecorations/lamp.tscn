@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://pfaoly2w3hm4"]
+
+[ext_resource type="Texture2D" uid="uid://chcy2iei2qx7c" path="res://Assets/Extras/Lamp_post.png" id="1_bekw5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uno5e"]
+atlas = ExtResource("1_bekw5")
+region = Rect2(80, 0, 16, 34)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vxcd3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uno5e")
+}],
+"loop": true,
+"name": &"default",
+"speed": 14.0
+}]
+
+[sub_resource type="Gradient" id="Gradient_qfipa"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.20039293, 0.6227898)
+colors = PackedColorArray(0.9634499, 0.9634499, 0.9634499, 1, 0.06666667, 0.06666667, 0.06666667, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_00ij4"]
+gradient = SubResource("Gradient_qfipa")
+fill = 1
+fill_from = Vector2(0.491453, 0.4871795)
+fill_to = Vector2(1, 0.5)
+
+[node name="Lamp" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_vxcd3")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, -8)
+scale = Vector2(1, 0.5)
+color = Color(1, 1, 0.3019608, 1)
+energy = 5.31
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_00ij4")
+offset = Vector2(2.6, 0)
+texture_scale = 6.33

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://6hmuprcynyig"
+path="res://.godot/imported/JDSherbert - Ambiences Music Pack - Dark Dark Woods.mp3-55e07d503c1f896babfdcf3772a97021.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sounds/BGM/JDSherbert - Ambiences Music Pack [FREE]/mp3/JDSherbert - Ambiences Music Pack - Dark Dark Woods.mp3"
+dest_files=["res://.godot/imported/JDSherbert - Ambiences Music Pack - Dark Dark Woods.mp3-55e07d503c1f896babfdcf3772a97021.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

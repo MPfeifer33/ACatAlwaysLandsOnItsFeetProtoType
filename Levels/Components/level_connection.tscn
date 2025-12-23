@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://level_connection_component"]
+
+[ext_resource type="Script" path="res://Levels/Components/level_connection.gd" id="1_script"]
+
+[node name="LevelConnection" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_script")
+direction = 1
+target_entrance = "default"
+trigger_size = 32.0
+trigger_length = 200.0
+editor_color = Color(1, 0.5, 0, 0.5)
+enabled = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]

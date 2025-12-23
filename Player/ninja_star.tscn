@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvg6j8lhkxh28"]
+
+[ext_resource type="Script" uid="uid://v02158qayil0" path="res://Player/ninja_star.gd" id="1_r1isn"]
+[ext_resource type="Texture2D" uid="uid://c3ml654awkcss" path="res://Assets/Extras/ninja_star.png" id="1_uvn4r"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_467bx"]
+radius = 6.0
+
+[node name="NinjaStar" type="Area2D"]
+collision_layer = 32
+collision_mask = 4
+scale = Vector2(0.25, 0.25)
+script = ExtResource("1_r1isn")
+
+[node name="Area2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_uvn4r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_467bx")

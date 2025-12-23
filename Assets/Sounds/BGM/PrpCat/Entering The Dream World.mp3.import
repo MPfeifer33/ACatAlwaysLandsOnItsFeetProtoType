@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cj2xua56600qi"
+path="res://.godot/imported/Entering The Dream World.mp3-5b9c9a4da5ee4a05a62548067d9c0e32.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sounds/BGM/PrpCat/Entering The Dream World.mp3"
+dest_files=["res://.godot/imported/Entering The Dream World.mp3-5b9c9a4da5ee4a05a62548067d9c0e32.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

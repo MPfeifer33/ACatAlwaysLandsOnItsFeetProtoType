@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dv72rbd17mj5o"
+path="res://.godot/imported/JDSherbert - Ambiences Music Pack - Frost Mountain Aura.ogg-19b512a5bde327a15625852634c8a207.oggvorbisstr"
+
+[deps]
+
+source_file="res://Assets/Sounds/BGM/JDSherbert - Ambiences Music Pack [FREE]/ogg/JDSherbert - Ambiences Music Pack - Frost Mountain Aura.ogg"
+dest_files=["res://.godot/imported/JDSherbert - Ambiences Music Pack - Frost Mountain Aura.ogg-19b512a5bde327a15625852634c8a207.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,66 @@
+[gd_scene load_steps=11 format=3 uid="uid://cdfii8hirthyl"]
+
+[ext_resource type="Texture2D" uid="uid://f6ehwat3yuju" path="res://Assets/Player/landing_dust_particle-sheet.png" id="1_dsfif"]
+[ext_resource type="Script" uid="uid://crog7w57ieg7c" path="res://Player/landing_dust.gd" id="2_sjbqt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sjbqt"]
+atlas = ExtResource("1_dsfif")
+region = Rect2(0, 0, 41, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_71atj"]
+atlas = ExtResource("1_dsfif")
+region = Rect2(41, 0, 41, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7gi35"]
+atlas = ExtResource("1_dsfif")
+region = Rect2(82, 0, 41, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g1h0j"]
+atlas = ExtResource("1_dsfif")
+region = Rect2(123, 0, 41, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g4h8n"]
+atlas = ExtResource("1_dsfif")
+region = Rect2(164, 0, 41, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ky6xg"]
+atlas = ExtResource("1_dsfif")
+region = Rect2(205, 0, 41, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nap2j"]
+atlas = ExtResource("1_dsfif")
+region = Rect2(246, 0, 41, 40)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mknfa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sjbqt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_71atj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7gi35")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g1h0j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g4h8n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ky6xg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nap2j")
+}],
+"loop": false,
+"name": &"Dust",
+"speed": 16.0
+}]
+
+[node name="LandingDust" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_mknfa")
+animation = &"Dust"
+script = ExtResource("2_sjbqt")

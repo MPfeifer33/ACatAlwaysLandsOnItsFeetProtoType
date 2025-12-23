@@ -1,0 +1,77 @@
+[gd_scene load_steps=12 format=3 uid="uid://dqhejsqec8aqc"]
+
+[ext_resource type="Texture2D" uid="uid://nplmylmoqbkl" path="res://Assets/Enemies/Bat/Bat.png" id="1_g687e"]
+[ext_resource type="PackedScene" path="res://Components/hurtbox_component.tscn" id="2_i84q7"]
+[ext_resource type="PackedScene" path="res://Components/hitbox_component.tscn" id="3_nc5xu"]
+[ext_resource type="PackedScene" path="res://Components/health_component.tscn" id="4_0g1cs"]
+[ext_resource type="Script" path="res://Enemies/bat.gd" id="5_script"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ppg8i"]
+atlas = ExtResource("1_g687e")
+region = Rect2(0, 0, 13, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_srckj"]
+atlas = ExtResource("1_g687e")
+region = Rect2(13, 0, 13, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s2gqn"]
+atlas = ExtResource("1_g687e")
+region = Rect2(26, 0, 13, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2o2nd"]
+atlas = ExtResource("1_g687e")
+region = Rect2(39, 0, 13, 9)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jvndi"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ppg8i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_srckj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s2gqn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2o2nd")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 16.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bat"]
+radius = 6.0
+
+[node name="Bat" type="CharacterBody2D" groups=["Enemy"]]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("5_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_jvndi")
+animation = &"fly"
+autoplay = "fly"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_bat")
+
+[node name="HurtboxComponent" parent="." instance=ExtResource("2_i84q7")]
+collision_layer = 4
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
+shape = SubResource("CircleShape2D_bat")
+
+[node name="HitboxComponent" parent="." instance=ExtResource("3_nc5xu")]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+shape = SubResource("CircleShape2D_bat")
+
+[node name="HealthComponent" parent="." instance=ExtResource("4_0g1cs")]
+max_health = 3
+invincibility_duration = 0.2

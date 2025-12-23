@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1shadow_rooms"]
+
+[ext_resource type="Script" path="res://Levels/Components/room.gd" id="1_room"]
+[ext_resource type="PackedScene" path="res://Camera/game_camera.tscn" id="2_camera"]
+
+[node name="RoomSystem" type="Node2D"]
+metadata/_edit_group_ = true
+
+[node name="GameCamera" parent="." instance=ExtResource("2_camera")]
+vertical_offset = -30.0
+base_zoom = 1.0
+zoom_margin = 1.02
+snap_bounce_intensity = 15.0
+debug_mode = true
+
+[node name="Rooms" type="Node2D" parent="."]
+
+[node name="Instructions" type="Node2D" parent="."]

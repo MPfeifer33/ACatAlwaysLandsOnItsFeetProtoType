@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://health_component_scene"]
+
+[ext_resource type="Script" path="res://Components/health_component.gd" id="1_script"]
+
+[node name="HealthComponent" type="Node"]
+script = ExtResource("1_script")
+max_health = 10
+starting_health = -1
+invincible = false
+invincibility_duration = 0.0

@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsh4w8qmenv1"]
+
+[ext_resource type="Script" uid="uid://bsv47x2k2x0yc" path="res://Levels/Components/level_environment.gd" id="1_env"]
+[ext_resource type="Texture2D" uid="uid://bhrfwusyqsi32" path="res://Assets/bgnew.png" id="2_bg"]
+
+[node name="LevelEnvironment" type="Node2D"]
+script = ExtResource("1_env")
+background_texture = ExtResource("2_bg")
+background_scale = Vector2(3, 3)
+background_offset = Vector2(-312, -160)
+canvas_modulate_color = Color(0.9275334, 0.92753345, 0.9275333, 1)
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Background"]
+show_behind_parent = true
+position = Vector2(-312, -160)
+scale = Vector2(3, 3)
+texture = ExtResource("2_bg")
+centered = false
+
+[node name="CanvasModulate" type="CanvasModulate" parent="Background"]
+color = Color(0.9275334, 0.92753345, 0.9275333, 1)

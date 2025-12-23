@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://camera_room_scene"]
+
+[ext_resource type="Script" uid="uid://camera_room_script" path="res://Camera/camera_room.gd" id="1_script"]
+
+[node name="CameraRoom" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]

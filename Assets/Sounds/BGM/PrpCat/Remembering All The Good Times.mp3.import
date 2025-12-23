@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cofeh3nlhfie5"
+path="res://.godot/imported/Remembering All The Good Times.mp3-0fabb0fcb352dcec62817b2ae15f31c9.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sounds/BGM/PrpCat/Remembering All The Good Times.mp3"
+dest_files=["res://.godot/imported/Remembering All The Good Times.mp3-0fabb0fcb352dcec62817b2ae15f31c9.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

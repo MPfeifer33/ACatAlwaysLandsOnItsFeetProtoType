@@ -19,7 +19,7 @@ signal room_transition_complete(room_id: String)
 @export var horizontal_offset: float = 0.0
 
 @export_group("Zoom Settings")
-## Base zoom level (higher = more zoomed in, sees less)
+## Zoom multiplier on top of auto-zoom. 1.0 = fit room exactly, 2.0 = 2x tighter (see half the room)
 @export var base_zoom: float = 1.0:
 	set(value):
 		base_zoom = value
@@ -191,7 +191,7 @@ func _set_room(room: Node) -> void:
 
 
 func _apply_zoom() -> void:
-	"""Apply zoom based on settings. If auto_zoom_to_room, calculates zoom to fit room."""
+	"""Apply zoom based on settings. If auto_zoom_to_room, calculates zoom to fit room, then multiplies by base_zoom."""
 	if _viewport_size == Vector2.ZERO:
 		# Not ready yet, will be called again in _ready
 		return
@@ -205,10 +205,13 @@ func _apply_zoom() -> void:
 			var zoom_x = _viewport_size.x / room_bounds.size.x
 			var zoom_y = _viewport_size.y / room_bounds.size.y
 			# Use the larger zoom (more zoomed in) to ensure room fills viewport
-			final_zoom = maxf(zoom_x, zoom_y)
+			var room_fit_zoom = maxf(zoom_x, zoom_y)
+			
+			# Multiply by base_zoom: 1.0 = fit room exactly, 2.0 = see half the room, etc.
+			final_zoom = room_fit_zoom * base_zoom
 			
 			if debug_mode:
-				print("[GameCamera] Auto-zoom: viewport=", _viewport_size, " room=", room_bounds.size, " zoom=", final_zoom)
+				print("[GameCamera] Auto-zoom: viewport=", _viewport_size, " room=", room_bounds.size, " room_fit_zoom=", room_fit_zoom, " base_zoom=", base_zoom, " final=", final_zoom)
 	
 	# Apply zoom with margin
 	zoom = Vector2(final_zoom * zoom_margin, final_zoom * zoom_margin)

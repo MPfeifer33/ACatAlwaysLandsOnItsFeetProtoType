@@ -13,7 +13,7 @@ signal player_exited(room: Room)
 ## Unique ID for this room (auto-generated if empty)
 @export var room_id: String = ""
 
-## Room size in pixels - default matches 1152x648 viewport
+## Room size in pixels - default 1152x648
 @export var room_size: Vector2 = Vector2(1152, 648):
 	set(value):
 		room_size = value

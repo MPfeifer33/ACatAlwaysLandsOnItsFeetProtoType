@@ -34,8 +34,8 @@ var player: Player = null
 var _main_node: Node = null  # The Main scene root
 var _level_container: Node = null  # Where levels get loaded
 var _ui_layer: CanvasLayer = null  # For menus
-var _pause_menu: Control = null
-var _main_menu: Control = null
+var _pause_menu: Node = null  # Can be Control or CanvasLayer
+var _main_menu: Node = null  # Can be Control or CanvasLayer
 var _initialized: bool = false
 
 

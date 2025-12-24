@@ -1,2 +1,3 @@
-res://Levels/shadow_world_one_proto.tscn
-res://Levels/shadow_world_one_proto.gdshader
+res://Globals/GameManager.gd
+res://Camera/game_camera.gd
+res://Levels/Components/room.gd

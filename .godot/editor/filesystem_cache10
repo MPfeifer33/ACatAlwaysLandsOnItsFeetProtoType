@@ -1,5 +1,5 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1766533133
+::res://::1766597802
 export_presets.cfg::TextFile::-1::1766371938::0::1::::<><><>0<>0<><>::
 icon.svg::CompressedTexture2D::3693978200212277123::1765600572::1765600577::1::::<><><>0<>0<>7f30d96d6807564f09dc6aadb035075d<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 ::res://Assets/::1766532632
@@ -464,22 +464,27 @@ samurai_panda_boss.tscn::PackedScene::8186811030808418795::1766339866::0::1::::<
 GameManager.gd::GDScript::4984296277833566612::1766358826::0::1::::<>Node<><>0<>0<><>::
 SaveManager.gd::GDScript::3963790613978230778::1766340446::0::1::::<>Node<><>0<>0<><>::
 SceneManager.gd::GDScript::3571648806496286650::1766340377::0::1::::<>Node<><>0<>0<><>::
-::res://Levels/::1766532632
+::res://Levels/::1766557039
 forest_one.tscn::PackedScene::4693730380672094828::1765938804::0::1::::<><><>0<>0<><>::uid://dis8auivmuv6g::::res://Assets/Tileset/Grass Tile Sheet 4.0.png
-shadow_world_one_proto.gdshader::Shader::6798550467587529580::1766523878::0::1::::<><><>0<>0<><>::
-shadow_world_one_proto.tscn::PackedScene::8593321343461920019::1766527503::0::1::::<><><>0<>0<><>::res://Levels/Components/level_environment.tscn<>uid://c34jerwkp3rma::::res://Levels/shadow_world_one_proto.gdshader<>res://Camera/game_camera.tscn<>uid://df0tawq5kb53m::::res://Assets/Background/Background/CustomBG/TempBGSHADOW.png<>uid://dontsbc7dkscu::::res://Assets/Tileset/Shadow_tileset.png<>uid://b5rup5f2vql3i::::res://Assets/Kooma - Arch.ogg<>uid://0n3vkuc2qpmx::::res://Main/hospital.tscn<>uid://cufte24inhgi6::::res://Player/Unlocks/double_jump_power_up.tscn<>uid://dqhejsqec8aqc::::res://Enemies/bat.tscn<>uid://mtspp3a4i7u::::res://Enemies/forest_slime.tscn<>uid://dov0t1kacf5ql::::res://Enemies/Boss/samurai_panda_boss.tscn<>res://Levels/Components/room.tscn
-::res://Levels/Components/::1766532632
+shadow_world_one_proto.gdshader::Shader::6798550467587529580::1766548893::0::1::::<><><>0<>0<><>::
+shadow_world_one_proto.tscn::PackedScene::8593321343461920019::1766548727::0::1::::<><><>0<>0<><>::res://Levels/Components/level_environment.tscn<>uid://c34jerwkp3rma::::res://Levels/shadow_world_one_proto.gdshader<>uid://bq8kxj5m6r2cw::::res://Camera/game_camera.tscn<>uid://df0tawq5kb53m::::res://Assets/Background/Background/CustomBG/TempBGSHADOW.png<>uid://dontsbc7dkscu::::res://Assets/Tileset/Shadow_tileset.png<>uid://b5rup5f2vql3i::::res://Assets/Kooma - Arch.ogg<>uid://0n3vkuc2qpmx::::res://Main/hospital.tscn<>uid://cufte24inhgi6::::res://Player/Unlocks/double_jump_power_up.tscn<>res://Levels/Components/room.tscn
+::res://Levels/Components/::1766597609
 level_connection.gd::GDScript::1523143318445069277::1766310308::0::1::::LevelConnection<>Area2D<><>0<>1<><>::
 level_connection.tscn::PackedScene::-1::1766310393::0::1::::<><><>0<>0<><>::res://Levels/Components/level_connection.gd
 level_entrance.gd::GDScript::5935418623299450585::1766340368::0::1::::LevelEntrance<>Marker2D<><>0<>1<><>::
 level_entrance.tscn::PackedScene::-1::1766310398::0::1::::<><><>0<>0<><>::res://Levels/Components/level_entrance.gd
 level_environment.gd::GDScript::5372153113633001643::1766345250::0::1::::LevelEnvironment<>Node2D<><>0<>0<><>::
 level_environment.tscn::PackedScene::-1::1766345260::0::1::::<><><>0<>0<><>::
-room.gd::GDScript::6018292400496388331::1766525308::0::1::::Room<>Area2D<><>0<>1<><>::
+room.gd::GDScript::6018292400496388331::1766597609::0::1::::Room<>Area2D<><>0<>1<><>::
 room.tscn::PackedScene::-1::1766310387::0::1::::<><><>0<>0<><>::res://Levels/Components/room.gd
 room_grid_helper.gd::GDScript::6394416420241182206::1766525315::0::1::::RoomGridHelper<>Node2D<><>0<>1<><>::
 shadow_world_environment.tscn::PackedScene::-1::1766345409::0::1::::<><><>0<>0<><>::
 shadow_world_rooms.tscn::PackedScene::-1::1766525595::0::1::::<><><>0<>0<><>::res://Levels/Components/room.gd<>res://Camera/game_camera.tscn
+::res://Levels/Tools/::1766597716
+preview_templates.gd::GDScript::40649525780228772::1766557177::0::1::::<>EditorScript<><>0<>1<><>::
+README.md::TextFile::-1::1766597716::0::1::::<><><>0<>0<><>::
+room_templates.gd::GDScript::6373578356745624212::1766597686::0::1::::RoomTemplates<>RefCounted<><>0<>1<><>::
+stamp_room_template.gd::GDScript::7003328839337715852::1766597695::0::1::::<>EditorScript<><>0<>1<><>::
 ::res://Main/::1766532632
 bg.tscn::PackedScene::6745904425124495744::1765660159::0::1::::<><><>0<>0<><>::uid://b22y0psi0q2px::::res://Assets/Background/Background/17.png<>uid://81dn4wqbnqsg::::res://Assets/Background/Sun & Moon Cycle/Glow Effect/5.png<>uid://cx6hulex8no6r::::res://Assets/Background/Clouds/Back/4.png<>uid://bg8vh5i5ubi1x::::res://Assets/Background/Clouds/Front/4.png<>uid://32h2jbiquou4::::res://Assets/Background/city 5/4.png<>uid://dt2d1kf7jyafv::::res://Assets/Background/city 5/3.png<>uid://ny37obq7s7u::::res://Assets/Background/city 5/5.png
 hospital.gd::GDScript::8340745695378856618::1766291248::0::1::::<>Node2D<><>0<>0<><>::

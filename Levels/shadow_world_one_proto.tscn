@@ -1,6 +1,7 @@
-[gd_scene load_steps=16 format=4 uid="uid://duow0nte48q3d"]
+[gd_scene load_steps=17 format=4 uid="uid://duow0nte48q3d"]
 
 [ext_resource type="PackedScene" path="res://Levels/Components/level_environment.tscn" id="1_8aaay"]
+[ext_resource type="PackedScene" path="res://Components/Background/level_background.tscn" id="1_f4lni"]
 [ext_resource type="Shader" uid="uid://c34jerwkp3rma" path="res://Levels/shadow_world_one_proto.gdshader" id="1_loigj"]
 [ext_resource type="PackedScene" uid="uid://bq8kxj5m6r2cw" path="res://Camera/game_camera.tscn" id="1_tfdpt"]
 [ext_resource type="Texture2D" uid="uid://df0tawq5kb53m" path="res://Assets/Background/Background/CustomBG/TempBGSHADOW.png" id="2_ajg6c"]
@@ -609,11 +610,23 @@ pattern_2 = SubResource("TileMapPattern_f3stn")
 
 [node name="shadow_world_one_proto" type="Node2D"]
 
+[node name="LevelBackground" parent="." instance=ExtResource("1_f4lni")]
+enable_shimmer = null
+enable_noise = false
+enable_stars = true
+star_density = 0.006
+star_colored = true
+enable_depth_layers = true
+depth_layer_count = 5
+depth_intensity = 0.242
+depth_scroll_speed = 0.322
+
 [node name="GameCamera" parent="." instance=ExtResource("1_tfdpt")]
 base_zoom = 2.5
 zoom_margin = 1.0
 
 [node name="LevelEnvironment" parent="." instance=ExtResource("1_8aaay")]
+visible = false
 background_texture = ExtResource("2_ajg6c")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." groups=["tilemap"]]
@@ -625,7 +638,7 @@ tile_set = SubResource("TileSet_ajg6c")
 position = Vector2(1085, 618)
 
 [node name="Hospital" parent="." instance=ExtResource("6_q6mhk")]
-position = Vector2(120, 1048)
+position = Vector2(112, 1216)
 
 [node name="DoubleJumpPowerUp" parent="." instance=ExtResource("8_cm7xr")]
 position = Vector2(694, 979)

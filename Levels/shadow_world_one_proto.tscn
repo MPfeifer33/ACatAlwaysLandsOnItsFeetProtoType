@@ -611,15 +611,18 @@ pattern_2 = SubResource("TileMapPattern_f3stn")
 [node name="shadow_world_one_proto" type="Node2D"]
 
 [node name="LevelBackground" parent="." instance=ExtResource("1_f4lni")]
-enable_shimmer = null
 enable_noise = false
 enable_stars = true
-star_density = 0.006
+star_density = 0.007
 star_colored = true
 enable_depth_layers = true
 depth_layer_count = 5
-depth_intensity = 0.242
-depth_scroll_speed = 0.322
+depth_intensity = 0.28
+depth_scroll_speed = 0.09
+particle_density = 0.001
+particle_speed = 1.5819999999999999
+particle_size = 3.0
+fog_color = Color(0.05170007, 0.92758065, 0.8982689, 0.3019608)
 
 [node name="GameCamera" parent="." instance=ExtResource("1_tfdpt")]
 base_zoom = 2.5

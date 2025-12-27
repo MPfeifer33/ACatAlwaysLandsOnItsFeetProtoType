@@ -1,102 +1,161 @@
-# Room Template Generator
+# Level Design Tools
 
-A level design tool for your Metroidvania - now with Hollow Knight-style tight camera!
+Tools for building Metroidvania levels with room-based camera locking.
 
-## New Camera Settings
+## Tools Overview
 
-Your viewport is now **336×192 pixels** (21×12 tiles at 16px).
-This matches Hollow Knight's intimate camera feel.
+| Tool | Purpose |
+|------|---------|
+| `level_generator.gd` | Procedural level layout generator |
+| `run_level_generator.gd` | EditorScript to run the generator |
+| `room_templates.gd` | Pre-defined room tile layouts |
+| `stamp_room_template.gd` | Stamp tile templates into TileMap |
+| `preview_templates.gd` | Preview all available templates |
 
-## Quick Start
+---
 
-### 1. Preview Available Templates
-Open `Levels/Tools/preview_templates.gd` and run it (Ctrl+Shift+X).
+## Level Generator (NEW!)
 
-### 2. Stamp a Template
+Procedurally generates connected room layouts using a walker algorithm.
+
+### Quick Start
 
 1. Open your level scene
-2. Select your **TileMapLayer**
-3. Open `Levels/Tools/stamp_room_template.gd`
-4. Change settings:
+2. Open `Levels/Tools/run_level_generator.gd`
+3. Adjust settings at the top:
    ```gdscript
-   const TEMPLATE_NAME := "flat_corridor"
-   const ROOM_OFFSET := Vector2i(0, 0)
+   const SEED := 0          # 0 = random, or set specific seed
+   const MIN_ROOMS := 8
+   const MAX_ROOMS := 15
+   const BRANCH_CHANCE := 0.3
+   const TERMINAL_CHANCE := 0.2
    ```
-5. Run script (Ctrl+Shift+X)
+4. Run script (Ctrl+Shift+X)
 
-## Room Size
+### What It Does
 
-All templates are now **21×12 tiles** = **336×192 pixels**
+- Places a **start room** at origin
+- Walks randomly, placing connected rooms
+- Respects **connection rules** (boss rooms connect to corridors, etc.)
+- Places **terminal rooms** (save, treasure, boss) at branch ends
+- Outputs **Room nodes** with correct sizes and positions
 
-This is exactly your viewport size - one screen = one room.
+### Room Types
 
-## Available Templates
+**Corridors:**
+- `corridor_h` - Horizontal (1x1)
+- `corridor_v` - Vertical (1x1)
+- `corridor_long_h` - Long horizontal (2x1)
+- `corridor_long_v` - Long vertical (1x2)
 
-### Basic Shapes
-| Template | Exits | Description |
-|----------|-------|-------------|
-| `flat_corridor` | Left, Right | Simple horizontal passage |
-| `vertical_shaft` | Top, Bottom | Tall climbing room |
-| `l_corner_left` | Right, Top | L-turn going left/up |
-| `l_corner_right` | Left, Top | L-turn going right/up |
-| `t_intersection` | Left, Right, Bottom | 3-way junction |
-| `open_arena` | Left, Right | Combat room with platforms |
+**Corners:**
+- `corner_tl`, `corner_tr`, `corner_bl`, `corner_br` (1x1 each)
 
-### Platforming Challenges
-| Template | Exits | Description |
-|----------|-------|-------------|
-| `staircase_up` | Left, Top-Right | Ascending platforms |
-| `floating_platforms` | Left, Right | Platforms over pit |
-| `wall_jump_corridor` | Top, Bottom | Narrow wall-jump shaft |
-| `pit_jump` | Left, Right | Wide pit with stepping stone |
-| `climb_room` | Left, Top | Vertical climbing challenge |
+**Junctions:**
+- `t_junction_up/down/left/right` - T-intersections (1x1)
+- `crossroads` - 4-way intersection (1x1)
 
-### Special Rooms
-| Template | Exits | Description |
-|----------|-------|-------------|
-| `save_room` | Left | Cozy save point (dead end) |
-| `treasure_room` | Left | Item on pedestal (dead end) |
-| `hub_room_3way` | Left, Right, Bottom | 3-way hub |
-| `transition_corridor` | Left, Right | Short connector |
-| `boss_arena` | Left | Boss fight room |
+**Special:**
+- `start_room` - Player spawn (1x1)
+- `save_room` - Save point, terminal (1x1)
+- `treasure_room` - Loot room, terminal (1x1)
+- `boss_room` - Boss arena, terminal (2x2)
 
-## Building a Level
+**Challenge:**
+- `arena_small` - Combat room (1x1)
+- `arena_large` - Large combat (2x1)
+- `vertical_shaft` - Tall climbing room (1x2)
 
-Place rooms next to each other by offsetting in tiles:
+### Connection Rules
+
+Rooms connect based on tags:
+- **Boss rooms** only connect to `corridor` or `hub` rooms
+- **Save rooms** connect to `corridor`, `hub`, or `junction`
+- **Treasure rooms** connect to `corridor` or `junction`
+
+### Customizing Room Types
+
+Edit `level_generator.gd` to add your own:
 
 ```gdscript
-// Room 1 at origin
-const ROOM_OFFSET := Vector2i(0, 0)
-
-// Room 2 to the right (21 tiles = 1 room width)
-const ROOM_OFFSET := Vector2i(21, 0)
-
-// Room 3 below room 1 (12 tiles = 1 room height)
-const ROOM_OFFSET := Vector2i(0, 12)
-
-// Room 4 diagonal (right and down)
-const ROOM_OFFSET := Vector2i(21, 12)
+"my_custom_room": {
+	"size": Vector2i(2, 1),           # 2 cells wide, 1 tall
+	"exits": [Dir.LEFT, Dir.RIGHT],   # Door positions
+	"tags": ["corridor", "custom"],   # For connection rules
+	"terminal": false,                # true = dead end
+	"weight": 5.0,                    # Spawn probability
+},
 ```
 
-## Existing Levels
+---
 
-Your existing levels use the old 1152×648 room size. You have two options:
+## Room Templates (Tile Stamping)
 
-1. **Rebuild them** with the new smaller rooms (recommended for consistency)
-2. **Keep them** but they'll feel zoomed out compared to new content
+Pre-defined 21×12 tile layouts for room interiors.
 
-## Multi-Screen Rooms
+### Cell Size
 
-For larger areas (like boss arenas), you can:
+- **1 grid cell = 1152×648 pixels** (camera room size)
+- **Room templates = 21×12 tiles** at 16px = 336×192 pixels
 
-1. Make rooms that are multiples of 21×12 (e.g., 42×12 for double-wide)
-2. Just make the Room node bigger than the viewport
-3. The camera will scroll within the room
+Note: Templates are smaller than grid cells. You can:
+1. Use multiple templates per cell
+2. Scale up templates
+3. Hand-edit after stamping
 
-## After Stamping
+### Stamping a Template
 
-1. Add a **Room** node at position (offset × 16)
-   - Size: 336×192 pixels (or multiples for bigger rooms)
-2. Place **Player** at spawn marker
-3. Add **Enemies/Items** at markers
-4. Set up **Door triggers** to connect rooms
+1. Select your **TileMapLayer**
+2. Open `stamp_room_template.gd`
+3. Set template and offset:
+   ```gdscript
+   const TEMPLATE_NAME := "flat_corridor"
+   const ROOM_OFFSET := Vector2i(0, 0)  # In tiles
+   ```
+4. Run (Ctrl+Shift+X)
+
+### Available Templates
+
+**Basic Shapes:**
+`flat_corridor`, `vertical_shaft`, `l_corner_left`, `l_corner_right`, `t_intersection`, `open_arena`
+
+**Platforming:**
+`staircase_up`, `floating_platforms`, `wall_jump_corridor`, `pit_jump`, `climb_room`
+
+**Special:**
+`save_room`, `treasure_room`, `hub_room_3way`, `transition_corridor`, `boss_arena`
+
+---
+
+## Workflow
+
+### Option A: Full Procedural
+
+1. Run level generator → creates Room nodes
+2. Add TileMapLayer
+3. Stamp templates into each room (or hand-paint)
+4. Add enemies, items, decorations
+
+### Option B: Semi-Procedural
+
+1. Run level generator to get a layout
+2. Hand-adjust room positions/sizes
+3. Design room interiors manually
+
+### Option C: Manual with Tools
+
+1. Use `RoomGridHelper` to plan layout visually
+2. Generate Room nodes
+3. Stamp templates as starting points
+4. Heavy customization
+
+---
+
+## Camera Integration
+
+The generator outputs rooms sized to your camera system:
+- **Cell size:** 1152×648 pixels
+- **Multi-cell rooms** (like 2x2 boss) automatically get larger Room nodes
+- Camera locks to room bounds automatically
+
+Your `GameCamera` at **2.75 zoom** shows ~419×236 pixels, so players see a portion of each room with the camera following within bounds.

@@ -58,7 +58,9 @@ theme_override_constants/separation = 12
 [node name="NewGameButton" type="Button" parent="CenterContainer/TitleContainer/ButtonContainer"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../ContinueButton")
 theme_override_font_sizes/font_size = 18
 text = "🎮  New Game"
@@ -66,15 +68,29 @@ text = "🎮  New Game"
 [node name="ContinueButton" type="Button" parent="CenterContainer/TitleContainer/ButtonContainer"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../NewGameButton")
-focus_neighbor_bottom = NodePath("../QuitButton")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../LevelSelectButton")
 theme_override_font_sizes/font_size = 18
 text = "📂  Continue"
+
+[node name="LevelSelectButton" type="Button" parent="CenterContainer/TitleContainer/ButtonContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../ContinueButton")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../QuitButton")
+theme_override_font_sizes/font_size = 18
+text = "🗺️  Level Select"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/TitleContainer/ButtonContainer"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
-focus_neighbor_top = NodePath("../ContinueButton")
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath("../LevelSelectButton")
+focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../NewGameButton")
 theme_override_font_sizes/font_size = 18
 text = "🚪  Quit"
@@ -109,7 +125,9 @@ layout_mode = 2
 [node name="SlotButton1" type="Button" parent="CenterContainer/SlotContainer"]
 custom_minimum_size = Vector2(300, 50)
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../BackButton")
+focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../SlotButton2")
 theme_override_font_sizes/font_size = 16
 text = "Slot 1 - Empty"
@@ -117,7 +135,9 @@ text = "Slot 1 - Empty"
 [node name="SlotButton2" type="Button" parent="CenterContainer/SlotContainer"]
 custom_minimum_size = Vector2(300, 50)
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../SlotButton1")
+focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../SlotButton3")
 theme_override_font_sizes/font_size = 16
 text = "Slot 2 - Empty"
@@ -125,7 +145,9 @@ text = "Slot 2 - Empty"
 [node name="SlotButton3" type="Button" parent="CenterContainer/SlotContainer"]
 custom_minimum_size = Vector2(300, 50)
 layout_mode = 2
+focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../SlotButton2")
+focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../BackButton")
 theme_override_font_sizes/font_size = 16
 text = "Slot 3 - Empty"
@@ -138,7 +160,9 @@ layout_mode = 2
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../SlotButton3")
+focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../SlotButton1")
 theme_override_font_sizes/font_size = 16
 text = "← Back"
@@ -165,7 +189,9 @@ theme_override_constants/separation = 20
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 focus_neighbor_left = NodePath("../NoButton")
+focus_neighbor_top = NodePath(".")
 focus_neighbor_right = NodePath("../NoButton")
+focus_neighbor_bottom = NodePath(".")
 theme_override_font_sizes/font_size = 16
 text = "Yes"
 
@@ -173,12 +199,44 @@ text = "Yes"
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 focus_neighbor_left = NodePath("../YesButton")
+focus_neighbor_top = NodePath(".")
 focus_neighbor_right = NodePath("../YesButton")
+focus_neighbor_bottom = NodePath(".")
 theme_override_font_sizes/font_size = 16
 text = "No"
 
+[node name="LevelContainer" type="VBoxContainer" parent="CenterContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="LevelList" type="VBoxContainer" parent="CenterContainer/LevelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="Label" parent="CenterContainer/LevelContainer/LevelList"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Select Level"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="CenterContainer/LevelContainer/LevelList"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CenterContainer/LevelContainer/LevelList"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_neighbor_left = NodePath(".")
+focus_neighbor_right = NodePath(".")
+theme_override_font_sizes/font_size = 16
+text = "← Back"
+
 [connection signal="pressed" from="CenterContainer/TitleContainer/ButtonContainer/NewGameButton" to="." method="_on_new_game_pressed"]
 [connection signal="pressed" from="CenterContainer/TitleContainer/ButtonContainer/ContinueButton" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="CenterContainer/TitleContainer/ButtonContainer/LevelSelectButton" to="." method="_on_level_select_pressed"]
 [connection signal="pressed" from="CenterContainer/TitleContainer/ButtonContainer/QuitButton" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="CenterContainer/SlotContainer/SlotButton1" to="." method="_on_slot_1_pressed"]
 [connection signal="pressed" from="CenterContainer/SlotContainer/SlotButton2" to="." method="_on_slot_2_pressed"]
@@ -186,3 +244,4 @@ text = "No"
 [connection signal="pressed" from="CenterContainer/SlotContainer/BackButton" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="CenterContainer/ConfirmContainer/ButtonRow/YesButton" to="." method="_on_confirm_yes_pressed"]
 [connection signal="pressed" from="CenterContainer/ConfirmContainer/ButtonRow/NoButton" to="." method="_on_confirm_no_pressed"]
+[connection signal="pressed" from="CenterContainer/LevelContainer/LevelList/BackButton" to="." method="_on_level_back_pressed"]

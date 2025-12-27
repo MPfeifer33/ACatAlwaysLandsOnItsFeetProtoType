@@ -1,0 +1,73 @@
+[gd_scene load_steps=11 format=3 uid="uid://dca3tyikc00my"]
+
+[ext_resource type="Texture2D" uid="uid://cfygv54wha08o" path="res://Assets/Player/SleepingZs_8.png" id="1_fkfn2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wtqop"]
+atlas = ExtResource("1_fkfn2")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jndvo"]
+atlas = ExtResource("1_fkfn2")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_asxsb"]
+atlas = ExtResource("1_fkfn2")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sygj0"]
+atlas = ExtResource("1_fkfn2")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fj0om"]
+atlas = ExtResource("1_fkfn2")
+region = Rect2(192, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7fsd7"]
+atlas = ExtResource("1_fkfn2")
+region = Rect2(240, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0tlk3"]
+atlas = ExtResource("1_fkfn2")
+region = Rect2(288, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3oc5o"]
+atlas = ExtResource("1_fkfn2")
+region = Rect2(336, 0, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_neo4d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wtqop")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jndvo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_asxsb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sygj0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fj0om")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7fsd7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0tlk3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3oc5o")
+}],
+"loop": true,
+"name": &"SleepingZs",
+"speed": 12.0
+}]
+
+[node name="SleepingZs" type="AnimatedSprite2D"]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_neo4d")
+animation = &"SleepingZs"
+frame_progress = 0.93176967

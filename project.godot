@@ -25,6 +25,10 @@ SceneManager="*res://Globals/SceneManager.gd"
 
 window/stretch/mode="viewport"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/level_generator/plugin.cfg")
+
 [global_group]
 
 tilemap=""

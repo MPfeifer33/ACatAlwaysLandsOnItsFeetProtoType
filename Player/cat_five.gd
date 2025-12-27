@@ -7,21 +7,39 @@ const JUMP_VELOCITY = -350.0
 const ACCELERATION = 800.0
 const FRICTION = 1200.0
 const WALL_CLIMB_SPEED = 65.0
-const SNEAK_SPEED_MULTIPLIER = 0.5
 
 # Dash constants
 const DASH_SPEED = 400.0
 const DASH_DURATION = 0.2
 const DASH_COOLDOWN = 3.0
 
+# Backstep constants
+const BACKSTEP_SPEED = 250.0
+const BACKSTEP_DURATION = 0.15
+const BACKSTEP_COOLDOWN = 0.5
+const BACKSTEP_IFRAMES = 0.2  # Invincibility duration
+
 # Combat constants
 const NINJA_STAR_SPEED = 400.0
 const NINJA_STAR_CD = 0.5
-const ATTACK_DURATION = 0.2
+const ATTACK_HITBOX_DURATION = 0.25  # 4 frames at 16fps - active hit frames
+const ATTACK_DURATION = 0.35  # Time locked in attack state before can combo/exit
 const THROW_WINDUP = 0.18  # Delay before star spawns (sync with animation)
 const THROW_VELOCITY_DAMPEN = 0.4  # Slow down when throwing
 const THROW_RECOVERY = 0.25  # Total time locked in throw (slightly longer than anim)
 const HURT_DURATION = 0.4  # Time before player regains control
+const HITSTOP_DURATION = 0.05  # Brief pause on hit (both dealing and receiving)
+
+# Shotgun burst constants
+const SHOTGUN_HOLD_TIME = 0.3  # How long to hold before burst triggers
+const SHOTGUN_STAR_COUNT = 3   # Number of stars in burst
+const SHOTGUN_SPREAD = 15.0    # Angle spread in degrees
+const SHOTGUN_CD = 1.5         # Cooldown after burst
+
+# Combo constants
+const COMBO_BUFFER_WINDOW = 0.3  # Time after attack to input next in combo
+const COMBO_RESET_TIME = 0.5     # Time of no input before combo resets
+const COMBO_MAX = 3              # Maximum hits in combo chain
 
 # Ledge climb constants
 const LEDGE_CLIMB_OFFSET = Vector2(12.0, -6.0)  # Final offset when climb completes (x forward, y up onto ledge)
@@ -53,20 +71,28 @@ var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 @onready var fire_point: Marker2D = $FirePoint
 @onready var health: HealthComponent = $HealthComponent
 @onready var hurtbox: Area2D = $Hurtbox
+@onready var sleep_zs: Marker2D = $SleepZs
+@export var sleeping_zs: PackedScene = preload("uid://dca3tyikc00my")
 
 # Timers that may be created dynamically
 var ninja_star_timer: Timer
 var dash_timer: Timer
 var dash_cooldown_timer: Timer
+var backstep_timer: Timer
+var backstep_cooldown_timer: Timer
 var attack_timer: Timer
+var attack_hitbox_timer: Timer
 var throw_windup_timer: Timer
 var throw_recovery_timer: Timer
 var hurt_timer: Timer
+var combo_buffer_timer: Timer
+var combo_reset_timer: Timer
+var shotgun_cooldown_timer: Timer
 
 # Shader reference for glitch effect
 var _tilemap_material: ShaderMaterial = null
 
-enum State { NORMAL, ON_WALL, DASHING, ATTACKING, HURT, DEAD, LEDGE_GRAB }
+enum State { NORMAL, ON_WALL, DASHING, BACKSTEPPING, ATTACKING, HURT, DEAD, LEDGE_GRAB }
 
 # State tracking
 var current_state: State = State.NORMAL
@@ -88,15 +114,25 @@ var _last_velocity_y: float = 0.0
 var can_wall_jump: bool = false
 var can_dash: bool = false
 var can_double_jump: bool = false
-var can_sneak: bool = false
+var can_backstep: bool = true  # Replaces sneak
 var can_attack: bool = true
 var can_throw: bool = true
+var can_shotgun_burst: bool = true  # Unlock flag for shotgun burst
 
 # Runtime ability tracking
 var _has_double_jumped: bool = false
 var _dash_direction: float = 0.0
-var _is_sneaking: bool = false
 var attack_damage: int = 3
+
+# Shotgun burst tracking
+var _throw_hold_time: float = 0.0
+var _shotgun_on_cooldown: bool = false
+
+# Combo tracking
+var _combo_count: int = 0           # Current hit in combo (0, 1, 2)
+var _combo_buffer_active: bool = false  # Can we chain to next attack?
+var _combo_queued: bool = false     # Did player press attack during buffer?
+var _attack_started_this_frame: bool = false  # Prevent same-frame combo queue
 
 # Animation state tracking for smooth transitions
 var _current_anim: StringName = &""
@@ -104,6 +140,7 @@ var _target_anim: StringName = &""
 var _facing_direction: float = 1.0  # 1 = right, -1 = left
 var _is_throwing: bool = false  # Lock to prevent throw animation interruption
 var _is_dead: bool = false
+var _sleep_zs_instance: Node = null  # Track spawned sleep effect
 
 # Cached input values (reduces Input polling)
 var _input_direction: float = 0.0
@@ -127,11 +164,18 @@ func _on_damaged(_amount: int, _current: int) -> void:
 	_change_state(State.HURT)
 	_stop_idle_chain()
 	_is_throwing = false
+	_reset_combo()
 	cat_sprite.play(&"hurt")
 	_current_anim = &"hurt"
 	# Knockback
 	velocity.x = -_facing_direction * 100.0
 	velocity.y = -150.0
+	# Screen shake
+	var camera = get_tree().get_first_node_in_group("GameCamera") as GameCamera
+	if camera:
+		camera.shake()
+	# Hitstop for impact feel
+	_do_hitstop()
 	# Timer to recover (backup in case animation_finished doesn't fire)
 	hurt_timer.start()
 
@@ -143,6 +187,7 @@ func _on_died() -> void:
 	_change_state(State.DEAD)
 	_stop_idle_chain()
 	_is_throwing = false
+	_reset_combo()
 	hitbox.set_deferred("monitoring", false)
 	hurtbox.set_deferred("monitoring", false)
 	cat_sprite.play(&"died")
@@ -166,11 +211,17 @@ func _setup_timers() -> void:
 	# Only create timers if they don't exist - uses a helper to reduce repetition
 	_ensure_timer("DashTimer", DASH_DURATION, _on_dash_timer_timeout)
 	_ensure_timer("DashCooldownTimer", DASH_COOLDOWN, Callable())
+	_ensure_timer("BackstepTimer", BACKSTEP_DURATION, _on_backstep_timer_timeout)
+	_ensure_timer("BackstepCooldownTimer", BACKSTEP_COOLDOWN, Callable())
 	_ensure_timer("AttackTimer", ATTACK_DURATION, _on_attack_timer_timeout)
+	_ensure_timer("AttackHitboxTimer", ATTACK_HITBOX_DURATION, _on_attack_hitbox_timeout)
 	_ensure_timer("NinjaStarTimer", NINJA_STAR_CD, _on_ninja_star_cd_timeout)
 	_ensure_timer("ThrowWindupTimer", THROW_WINDUP, _on_throw_windup_complete)
 	_ensure_timer("ThrowRecoveryTimer", THROW_RECOVERY, _on_throw_recovery_complete)
 	_ensure_timer("HurtTimer", HURT_DURATION, _on_hurt_timer_timeout)
+	_ensure_timer("ComboBufferTimer", COMBO_BUFFER_WINDOW, _on_combo_buffer_timeout)
+	_ensure_timer("ComboResetTimer", COMBO_RESET_TIME, _on_combo_reset_timeout)
+	_ensure_timer("ShotgunCooldownTimer", SHOTGUN_CD, _on_shotgun_cooldown_timeout)
 
 
 func _ensure_timer(timer_name: String, wait_time: float, callback: Callable) -> Timer:
@@ -190,11 +241,17 @@ func _ensure_timer(timer_name: String, wait_time: float, callback: Callable) -> 
 	match timer_name:
 		"DashTimer": dash_timer = timer
 		"DashCooldownTimer": dash_cooldown_timer = timer
+		"BackstepTimer": backstep_timer = timer
+		"BackstepCooldownTimer": backstep_cooldown_timer = timer
 		"AttackTimer": attack_timer = timer
+		"AttackHitboxTimer": attack_hitbox_timer = timer
 		"NinjaStarTimer": ninja_star_timer = timer
 		"ThrowWindupTimer": throw_windup_timer = timer
 		"ThrowRecoveryTimer": throw_recovery_timer = timer
 		"HurtTimer": hurt_timer = timer
+		"ComboBufferTimer": combo_buffer_timer = timer
+		"ComboResetTimer": combo_reset_timer = timer
+		"ShotgunCooldownTimer": shotgun_cooldown_timer = timer
 	
 	return timer
 
@@ -229,6 +286,9 @@ func _setup_hitbox() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Reset per-frame flags
+	_attack_started_this_frame = false
+	
 	# Cache input once per frame (more efficient than polling multiple times)
 	_cache_input()
 	
@@ -245,11 +305,13 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	
+	# Coyote time - start when we JUST left the floor (not by jumping)
+	if _was_on_floor and not is_on_floor() and velocity.y >= 0:
+		coyote_timer.start()
+	
 	# Landing dust effect - use pre-move velocity since move_and_slide zeroes it on landing
 	if is_on_floor() and not _was_on_floor:
-		print("Landed! pre_move_velocity_y: ", pre_move_velocity_y, " threshold: ", DUST_THRESHOLD)
 		if absf(pre_move_velocity_y) > DUST_THRESHOLD:
-			print("Spawning dust!")
 			_spawn_dust()
 	
 	# Update tracking variables
@@ -273,6 +335,8 @@ func _process_state(delta: float) -> void:
 			_state_on_wall(delta)
 		State.DASHING:
 			_state_dashing(delta)
+		State.BACKSTEPPING:
+			_state_backstepping(delta)
 		State.ATTACKING:
 			_state_attacking(delta)
 		State.HURT:
@@ -309,13 +373,10 @@ func _update_glitch_shader() -> void:
 
 func _spawn_dust() -> void:
 	if not dust_particles:
-		print("ERROR: dust_particles is null!")
 		return
 	var dust = dust_particles.instantiate()
-	print("Dust instantiated: ", dust, " adding to: ", get_parent())
 	get_parent().add_child(dust)
 	dust.global_position = dust_point.global_position
-	print("Dust position: ", dust.global_position)
 
 func _throw_star() -> void:
 	if not ninja_star or not can_throw or _is_throwing:
@@ -339,6 +400,94 @@ func _throw_star() -> void:
 	
 	can_throw = false
 	ninja_star_timer.start()
+
+
+func _throw_shotgun_burst() -> void:
+	"""Fire a spread of ninja stars - unlockable ability."""
+	if not ninja_star or _is_throwing or _shotgun_on_cooldown:
+		return
+	
+	# Commit to the throw
+	velocity.x *= THROW_VELOCITY_DAMPEN
+	
+	_is_throwing = true
+	cat_sprite.stop()
+	cat_sprite.play(&"throw_star")
+	cat_sprite.frame = 0
+	_current_anim = &"throw_star"
+	
+	# Spawn burst immediately (no windup for power move)
+	_spawn_shotgun_stars()
+	
+	# Kickback from the burst
+	velocity.x -= _facing_direction * 120.0
+	
+	# Controller rumble for impact
+	_do_rumble(0.3, 0.6, 0.15)  # weak_magnitude, strong_magnitude, duration
+	
+	# Start cooldowns
+	_shotgun_on_cooldown = true
+	shotgun_cooldown_timer.start()
+	throw_recovery_timer.start()
+	
+	# Also trigger normal throw cooldown
+	can_throw = false
+	ninja_star_timer.start()
+
+
+func _spawn_shotgun_stars() -> void:
+	"""Spawn multiple stars in a spread pattern."""
+	var base_dir = Vector2(_facing_direction, 0)
+	var spawn_pos = fire_point.global_position
+	
+	# Calculate angles for spread
+	var angles: Array[float] = []
+	var half_spread = SHOTGUN_SPREAD * (SHOTGUN_STAR_COUNT - 1) / 2.0
+	
+	for i in SHOTGUN_STAR_COUNT:
+		var angle_offset = -half_spread + (SHOTGUN_SPREAD * i)
+		angles.append(deg_to_rad(angle_offset))
+	
+	# Spawn stars
+	for angle in angles:
+		var star = ninja_star.instantiate()
+		get_parent().add_child(star)
+		star.global_position = spawn_pos
+		
+		# Rotate direction by angle
+		var rotated_dir = base_dir.rotated(angle)
+		star.set_direction_vector(rotated_dir)
+
+
+func _do_rumble(weak: float, strong: float, duration: float) -> void:
+	"""Trigger controller rumble. Works on controller 0."""
+	Input.start_joy_vibration(0, weak, strong, duration)
+
+
+func _update_throw_hold(delta: float) -> void:
+	"""Track throw button hold for tap vs hold behavior."""
+	if _is_throwing:
+		_throw_hold_time = 0.0
+		return
+	
+	if Input.is_action_pressed("throw_star"):
+		_throw_hold_time += delta
+		
+		# Check for shotgun burst threshold
+		if can_shotgun_burst and _throw_hold_time >= SHOTGUN_HOLD_TIME and not _shotgun_on_cooldown:
+			_throw_hold_time = 0.0
+			_throw_shotgun_burst()
+	
+	elif Input.is_action_just_released("throw_star"):
+		# Released before burst threshold - do single throw
+		if _throw_hold_time > 0 and _throw_hold_time < SHOTGUN_HOLD_TIME:
+			if can_throw and ninja_star_timer.is_stopped():
+				_throw_star()
+		_throw_hold_time = 0.0
+
+
+func _on_shotgun_cooldown_timeout() -> void:
+	_shotgun_on_cooldown = false
 
 
 func _on_throw_windup_complete() -> void:
@@ -389,8 +538,7 @@ func _state_normal(delta: float) -> void:
 		_has_double_jumped = false
 	
 	# Start coyote time BEFORE jump check so it's available on the same frame
-	if _was_on_floor and not is_on_floor() and velocity.y >= 0:
-		coyote_timer.start()
+	# (Coyote time is now handled in _physics_process after move_and_slide)
 	
 	# Buffered jump check
 	var can_jump = is_on_floor() or not coyote_timer.is_stopped()
@@ -398,6 +546,9 @@ func _state_normal(delta: float) -> void:
 		velocity.y = JUMP_VELOCITY
 		jump_buffer_timer.stop()
 		coyote_timer.stop()
+	
+	# Track throw button hold for shotgun burst
+	_update_throw_hold(delta)
 	
 	_process_movement(delta)
 	_update_normal_animation()
@@ -475,14 +626,25 @@ func _state_dashing(_delta: float) -> void:
 		velocity.y += gravity * get_physics_process_delta_time()
 
 
+func _state_backstepping(_delta: float) -> void:
+	# Move backward (opposite facing direction)
+	velocity.x = -_facing_direction * BACKSTEP_SPEED
+	
+	# Apply gravity
+	if not is_on_floor():
+		velocity.y += gravity * get_physics_process_delta_time()
+
+
 func _state_attacking(delta: float) -> void:
 	# Small forward momentum during attack
-	var attack_boost = 30.0 if is_on_floor() else 10.0
+	var attack_boost = 15.0 if is_on_floor() else 10.0
 	velocity.x += _facing_direction * attack_boost * delta
 	velocity.x = clampf(velocity.x, -SPEED * 1.2, SPEED * 1.2)
 	
 	if not is_on_floor():
 		velocity.y += gravity * delta
+	
+	# Combo input is handled in _input() to avoid double-detection
 
 
 func _state_hurt(delta: float) -> void:
@@ -751,18 +913,22 @@ func _check_transitions() -> void:
 			_check_normal_transitions()
 		State.ON_WALL:
 			_check_wall_transitions()
-		State.DASHING, State.ATTACKING, State.HURT, State.DEAD, State.LEDGE_GRAB:
+		State.DASHING, State.BACKSTEPPING, State.ATTACKING, State.HURT, State.DEAD, State.LEDGE_GRAB:
 			pass  # These states end via timer or animation
 
 
 func _check_normal_transitions() -> void:
-	# Throwing
-	if Input.is_action_just_pressed("throw_star") and ninja_star_timer.is_stopped():
-		_throw_star()
+	# Throwing is handled by hold detection in _update_throw_hold()
+	# Single throw triggers on release, burst triggers on hold threshold
 	
 	# Attack (highest priority action)
 	if can_attack and Input.is_action_just_pressed("attack"):
 		_start_attack()
+		return
+	
+	# Backstep (dodge)
+	if can_backstep and Input.is_action_just_pressed("sneak") and backstep_cooldown_timer.is_stopped():
+		_start_backstep()
 		return
 	
 	# Dash
@@ -839,8 +1005,19 @@ func _change_state(new_state: State) -> void:
 func _start_attack() -> void:
 	_change_state(State.ATTACKING)
 	attack_timer.start()
+	attack_hitbox_timer.start()
 	_stop_idle_chain()
 	
+	# Reset combo state for this attack
+	_combo_buffer_active = false
+	_combo_queued = false
+	_attack_started_this_frame = true  # Block same-frame combo detection
+	combo_buffer_timer.stop()
+	
+	# Keep combo reset timer running - resets if we don't continue
+	combo_reset_timer.start()
+	
+	# Enable hitbox for active frames
 	hitbox.monitoring = true
 	
 	# Position hitbox based on facing
@@ -848,12 +1025,37 @@ func _start_attack() -> void:
 	if hitbox_collision:
 		hitbox_collision.position.x = absf(hitbox_collision.position.x) * _facing_direction
 	
-	_queue_animation(&"attack", true)  # Force play attack
+	# Play appropriate attack animation based on combo count
+	var attack_anim: StringName
+	match _combo_count:
+		0: attack_anim = &"attack"
+		1: attack_anim = &"attack2" if cat_sprite.sprite_frames.has_animation(&"attack2") else &"attack"
+		2: attack_anim = &"attack3" if cat_sprite.sprite_frames.has_animation(&"attack3") else &"attack"
+		_: attack_anim = &"attack"
+	
+	_queue_animation(attack_anim, true)
+
+
+func _on_attack_hitbox_timeout() -> void:
+	"""Hitbox active frames are over - disable it during recovery."""
+	hitbox.monitoring = false
 
 
 func _on_attack_timer_timeout() -> void:
-	_change_state(State.NORMAL)
-	hitbox.monitoring = false
+	# Stop the attack animation to prevent looping
+	cat_sprite.stop()
+	
+	# Start combo buffer window - player can input next attack
+	_combo_buffer_active = true
+	combo_buffer_timer.start()
+	
+	# If player already queued next attack, chain immediately
+	if _combo_queued and _combo_count < COMBO_MAX - 1:
+		_combo_count += 1
+		_start_attack()
+	else:
+		_change_state(State.NORMAL)
+		_update_normal_animation()
 
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
@@ -861,6 +1063,7 @@ func _on_hitbox_area_entered(area: Area2D) -> void:
 	var body = area.get_parent()
 	if body.has_method("take_damage"):
 		body.take_damage(attack_damage)
+		_do_hitstop()
 
 
 func _start_dash() -> void:
@@ -877,15 +1080,41 @@ func _on_dash_timer_timeout() -> void:
 	_change_state(State.NORMAL)
 
 
+func _start_backstep() -> void:
+	"""Quick backward hop with i-frames."""
+	_change_state(State.BACKSTEPPING)
+	backstep_timer.start()
+	backstep_cooldown_timer.start()
+	_stop_idle_chain()
+	
+	# Grant i-frames
+	hurtbox.set_deferred("monitoring", false)
+	
+	# Small upward pop for the hop feel
+	velocity.y = -80.0
+	
+	# Play dash animation (reuse for now, or use a backstep anim if you have one)
+	_queue_animation(&"dash", true)
+	
+	# Schedule i-frames to end
+	get_tree().create_timer(BACKSTEP_IFRAMES, false).timeout.connect(_end_backstep_iframes)
+
+
+func _end_backstep_iframes() -> void:
+	"""Re-enable hurtbox after i-frames."""
+	if not _is_dead:
+		hurtbox.set_deferred("monitoring", true)
+
+
+func _on_backstep_timer_timeout() -> void:
+	_change_state(State.NORMAL)
+
+
 # ============ MOVEMENT ============
 
 func _process_movement(delta: float) -> void:
-	_is_sneaking = can_sneak and Input.is_action_pressed("sneak")
-	
-	var current_speed = SPEED * (SNEAK_SPEED_MULTIPLIER if _is_sneaking else 1.0)
-	
 	if _input_direction != 0:
-		velocity.x = move_toward(velocity.x, _input_direction * current_speed, ACCELERATION * delta)
+		velocity.x = move_toward(velocity.x, _input_direction * SPEED, ACCELERATION * delta)
 		_facing_direction = signf(_input_direction)
 		cat_sprite.flip_h = _input_direction < 0
 	else:
@@ -919,7 +1148,7 @@ func _update_normal_animation() -> void:
 		_queue_animation(&"run")
 	elif speed_abs > WALK_THRESHOLD:
 		_stop_idle_chain()
-		_queue_animation(&"sneak" if _is_sneaking else &"walk")
+		_queue_animation(&"walk")
 	else:
 		_handle_idle_animation()
 
@@ -944,6 +1173,11 @@ func _stop_idle_chain() -> void:
 	idle_timer.stop()
 	sit_timer.stop()
 	sleep_timer.stop()
+	
+	# Remove sleep Zs effect if active
+	if _sleep_zs_instance:
+		_sleep_zs_instance.queue_free()
+		_sleep_zs_instance = null
 
 
 func _on_animation_finished() -> void:
@@ -956,7 +1190,7 @@ func _on_animation_finished() -> void:
 				_queue_animation(&"wall_grab")
 			elif current_state == State.NORMAL:
 				_update_normal_animation()
-		&"attack":
+		&"attack", &"attack2", &"attack3":
 			# Smoothly return to appropriate animation after attack
 			if current_state == State.NORMAL:
 				_update_normal_animation()
@@ -987,6 +1221,12 @@ func _input(event: InputEvent) -> void:
 		if velocity.y < 0:
 			velocity.y *= 0.5
 		cat_sprite.speed_scale = 1.5
+	
+	# Combo input - only queue if we're attacking and timer is running
+	# Also block if attack just started this frame (same input that triggered attack)
+	if event.is_action_pressed("attack"):
+		if current_state == State.ATTACKING and not attack_timer.is_stopped() and not _combo_queued and not _attack_started_this_frame:
+			_combo_queued = true
 
 
 # ============ IDLE TIMER CALLBACKS ============
@@ -1017,6 +1257,15 @@ func _on_sleep_timer_timeout() -> void:
 	_queue_animation(&"sleep")
 	idle_timer.stop()
 	sit_timer.stop()
+	
+	# Spawn sleep Zs effect
+	if sleeping_zs and sleep_zs and not _sleep_zs_instance:
+		_sleep_zs_instance = sleeping_zs.instantiate()
+		add_child(_sleep_zs_instance)
+		_sleep_zs_instance.global_position = sleep_zs.global_position
+		_sleep_zs_instance.scale = Vector2(0.25, 0.25)  # Adjust scale here
+		if _sleep_zs_instance is AnimatedSprite2D:
+			_sleep_zs_instance.play(&"SleepingZs")  # Start the animation
 
 
 func _on_jump_buffer_timer_timeout() -> void:
@@ -1027,3 +1276,29 @@ func _on_hurt_timer_timeout() -> void:
 	if current_state == State.HURT and not _is_dead:
 		_change_state(State.NORMAL)
 		_update_normal_animation()
+
+
+func _on_combo_buffer_timeout() -> void:
+	# Buffer window closed - no more combo chaining possible
+	_combo_buffer_active = false
+
+
+func _on_combo_reset_timeout() -> void:
+	# No attack within reset window - reset combo counter
+	_reset_combo()
+
+
+func _reset_combo() -> void:
+	"""Reset all combo state - call when combo ends or is interrupted."""
+	_combo_count = 0
+	_combo_queued = false
+	_combo_buffer_active = false
+	combo_buffer_timer.stop()
+	combo_reset_timer.stop()
+
+
+func _do_hitstop() -> void:
+	"""Brief freeze on hit for impact feel."""
+	get_tree().paused = true
+	await get_tree().create_timer(HITSTOP_DURATION, true, false, true).timeout
+	get_tree().paused = false

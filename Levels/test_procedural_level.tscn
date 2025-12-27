@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=4 uid="uid://d0oumfc3rdmph"]
+[gd_scene load_steps=10 format=4 uid="uid://d0oumfc3rdmph"]
 
 [ext_resource type="PackedScene" uid="uid://bq8kxj5m6r2cw" path="res://Camera/game_camera.tscn" id="1_fogq7"]
 [ext_resource type="Script" uid="uid://cc6qq4pvww41w" path="res://addons/level_generator/level_generator_node.gd" id="1_gen"]
 [ext_resource type="Texture2D" uid="uid://cig6qjm5jfkjc" path="res://Assets/Tileset/Shadow_Tileset_blob.png" id="2_nw6xk"]
 [ext_resource type="Script" uid="uid://cr0knqodt4ky2" path="res://Levels/Components/room.gd" id="4_umv7m"]
-[ext_resource type="PackedScene" uid="uid://j8mhkqha6coq" path="res://Player/cat_five.tscn" id="5_36346"]
+[ext_resource type="PackedScene" path="res://Levels/Components/player_start.tscn" id="6_36346"]
+[ext_resource type="PackedScene" uid="uid://fm8xt522l3yh" path="res://Enemies/Slimes/corrupt_slime.tscn" id="6_umv7m"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fo767"]
 texture = ExtResource("2_nw6xk")
@@ -283,6 +284,8 @@ size = Vector2(1152, 648)
 
 [node name="GameCamera" parent="." instance=ExtResource("1_fogq7")]
 zoom = Vector2(2.75, 2.75)
+base_zoom = 2.75
+default_shake_intensity = 2.0
 
 [node name="Generator" type="Node2D" parent="." node_paths=PackedStringArray("tilemap_layer")]
 script = ExtResource("1_gen")
@@ -298,6 +301,7 @@ tile_map_data = PackedByteArray("AACr/5v/AAALAAIAAACq/5v/AAABAAIAAACp/5v/AAABAAI
 tile_set = SubResource("TileSet_jmht1")
 
 [node name="Room" type="Area2D" parent="."]
+position = Vector2(0, -48)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -307,7 +311,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room2" type="Area2D" parent="."]
-position = Vector2(-1152, 0)
+position = Vector2(-1152, -48)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -317,7 +321,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room3" type="Area2D" parent="."]
-position = Vector2(-2304, 8)
+position = Vector2(-2304, -48)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -327,7 +331,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room4" type="Area2D" parent="."]
-position = Vector2(-2312, 664)
+position = Vector2(-2304, 600)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -337,7 +341,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room5" type="Area2D" parent="."]
-position = Vector2(-3464, 8)
+position = Vector2(-3456, -48)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -347,7 +351,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room6" type="Area2D" parent="."]
-position = Vector2(-3448, 656)
+position = Vector2(-3456, 600)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -357,7 +361,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room7" type="Area2D" parent="."]
-position = Vector2(-3464, 1304)
+position = Vector2(-3456, 1248)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -367,7 +371,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room8" type="Area2D" parent="."]
-position = Vector2(-3456, 1952)
+position = Vector2(-3456, 1896)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -377,7 +381,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room9" type="Area2D" parent="."]
-position = Vector2(-3456, 2592)
+position = Vector2(-3456, 2544)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -387,7 +391,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room10" type="Area2D" parent="."]
-position = Vector2(-5008, 2392)
+position = Vector2(-6912, -1992)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -397,7 +401,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room11" type="Area2D" parent="."]
-position = Vector2(-1944, -728)
+position = Vector2(-5760, -1992)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -407,7 +411,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room12" type="Area2D" parent="."]
-position = Vector2(-776, 1416)
+position = Vector2(-4608, -1992)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -417,7 +421,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room13" type="Area2D" parent="."]
-position = Vector2(464, 1104)
+position = Vector2(-3456, -1992)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -427,7 +431,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room14" type="Area2D" parent="."]
-position = Vector2(-4608, 1296)
+position = Vector2(-3456, -696)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -437,7 +441,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room15" type="Area2D" parent="."]
-position = Vector2(-5760, 1296)
+position = Vector2(-3456, -1344)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -447,7 +451,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room16" type="Area2D" parent="."]
-position = Vector2(-6912, 1296)
+position = Vector2(-3456, 3192)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -457,7 +461,7 @@ position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
 [node name="Room17" type="Area2D" parent="."]
-position = Vector2(-6912, 1944)
+position = Vector2(-4608, 3192)
 script = ExtResource("4_umv7m")
 room_id = "room_3900199502305"
 metadata/_custom_type_script = "uid://cr0knqodt4ky2"
@@ -466,5 +470,18 @@ metadata/_custom_type_script = "uid://cr0knqodt4ky2"
 position = Vector2(576, 324)
 shape = SubResource("RectangleShape2D_86nyf")
 
-[node name="CatFive" parent="." instance=ExtResource("5_36346")]
-position = Vector2(975, 544)
+[node name="Room18" type="Area2D" parent="."]
+position = Vector2(-2304, -1992)
+script = ExtResource("4_umv7m")
+room_id = "room_3900199502305"
+metadata/_custom_type_script = "uid://cr0knqodt4ky2"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Room18"]
+position = Vector2(576, 324)
+shape = SubResource("RectangleShape2D_86nyf")
+
+[node name="CorruptSlime" parent="." instance=ExtResource("6_umv7m")]
+position = Vector2(423, 548)
+
+[node name="PlayerStart" parent="." instance=ExtResource("6_36346")]
+position = Vector2(861, 525)

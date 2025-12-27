@@ -263,6 +263,15 @@ func load_level(level_name: String) -> void:
 	print("Loaded level: ", level_name)
 
 
+func load_level_with_transition(level_name: String, position_callback: Callable = Callable()) -> void:
+	"""Load a level with fade transition. Optionally provide a callback to position player."""
+	await SceneManager.transition_with_callback(func():
+		load_level(level_name)
+		if position_callback.is_valid():
+			position_callback.call()
+	)
+
+
 func unload_current_level() -> void:
 	"""Unload the current level."""
 	if current_level:
@@ -291,8 +300,10 @@ func transition_to_level(level_name: String) -> void:
 # ============ GAME FLOW ============
 
 func go_to_main_menu() -> void:
-	"""Return to the main menu."""
-	unload_current_level()
+	"""Return to the main menu with fade transition."""
+	await SceneManager.transition_with_callback(func():
+		unload_current_level()
+	)
 	change_state(GameState.MAIN_MENU)
 
 
@@ -301,11 +312,8 @@ func start_new_game(slot: int) -> void:
 	# Initialize fresh save data
 	SaveManager.start_new_game(slot)
 	
-	# Load the first level
-	load_level(DEFAULT_FIRST_LEVEL)
-	
-	# Position player at level's default spawn
-	_position_player_for_new_game()
+	# Load the first level with transition
+	await load_level_with_transition(DEFAULT_FIRST_LEVEL, _position_player_for_new_game)
 	
 	# Start playing
 	change_state(GameState.PLAYING)
@@ -329,10 +337,8 @@ func continue_game(slot: int) -> bool:
 	if level_to_load.is_empty():
 		level_to_load = DEFAULT_FIRST_LEVEL
 	
-	load_level(level_to_load)
-	
-	# Position player at saved respawn position
-	_position_player_from_save()
+	# Load level with transition
+	await load_level_with_transition(level_to_load, _position_player_from_save)
 	
 	# Start playing
 	change_state(GameState.PLAYING)
@@ -413,6 +419,22 @@ func _find_level_start_position() -> Vector2:
 func quit_game() -> void:
 	"""Quit the application."""
 	get_tree().quit()
+
+
+func quick_play_level(level_name: String) -> void:
+	"""Quick play a level without save data (for testing/level select)."""
+	# Load the level with transition
+	await load_level_with_transition(level_name, _position_player_for_new_game)
+	
+	# Start playing
+	change_state(GameState.PLAYING)
+	
+	print("Quick play: ", level_name)
+
+
+func return_to_menu() -> void:
+	"""Return to main menu from quick play or normal gameplay."""
+	go_to_main_menu()
 
 
 # ============ UTILITY ============

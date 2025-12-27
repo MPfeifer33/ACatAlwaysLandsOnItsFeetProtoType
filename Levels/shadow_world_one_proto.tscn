@@ -620,12 +620,12 @@ depth_layer_count = 5
 depth_intensity = 0.28
 depth_scroll_speed = 0.09
 particle_density = 0.001
-particle_speed = 1.5819999999999999
+particle_speed = 1.582
 particle_size = 3.0
 fog_color = Color(0.05170007, 0.92758065, 0.8982689, 0.3019608)
 
 [node name="GameCamera" parent="." instance=ExtResource("1_tfdpt")]
-base_zoom = 2.5
+base_zoom = 2.75
 zoom_margin = 1.0
 
 [node name="LevelEnvironment" parent="." instance=ExtResource("1_8aaay")]
